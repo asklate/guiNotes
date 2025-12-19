@@ -29,4 +29,8 @@ public class Database {
     public void saveNote(Note note) {
         notes.add(note);
     }
+
+    public Note getNote(long l) {
+        return new Note(3, "Title", "Content", "Filename", null, null);
+    }
 }

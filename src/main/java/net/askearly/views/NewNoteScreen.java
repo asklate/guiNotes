@@ -1,6 +1,7 @@
 package net.askearly.views;
 
 import net.askearly.actions.SaveNoteAction;
+import net.askearly.model.Note;
 import net.askearly.model.NoteTableModel;
 import net.askearly.settings.Settings;
 
@@ -18,6 +19,7 @@ public class NewNoteScreen extends JDialog {
     private final JTextField titleField = new JTextField(20);
     private final JTextArea content = new JTextArea();
     private final AtomicReference<File> selectedFile =  new AtomicReference<>();
+    private JLabel fileNameLabel = new JLabel("");
 
     public NewNoteScreen(Settings settings, NoteTableModel model, long id) {
         this.settings = settings;
@@ -32,6 +34,14 @@ public class NewNoteScreen extends JDialog {
         add(createForm(), BorderLayout.CENTER);
         setLocationRelativeTo(null);
         setVisible(true);
+    }
+
+    public NewNoteScreen(Settings settings, NoteTableModel model, long id, Note note) {
+        this(settings, model, id);
+        titleField.setText(note.getTitle());
+        content.setText(note.getContent());
+        content.setCaretPosition(0);
+        fileNameLabel.setText(note.getFilename());
     }
 
     private JPanel createForm() {
@@ -56,8 +66,6 @@ public class NewNoteScreen extends JDialog {
         JLabel fileLabel = new JLabel(settings.getProperties().getProperty("label.note.file"));
         fileLabel.setLayout(new FlowLayout(FlowLayout.LEFT));
         filePanel.add(fileLabel);
-
-        JLabel fileNameLabel = new JLabel("");
 
         JButton openButton = new JButton(settings.getProperties().getProperty("button.note.open"));
         openButton.setEnabled(false);
