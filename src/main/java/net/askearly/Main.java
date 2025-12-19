@@ -1,6 +1,7 @@
 package net.askearly;
 
 import net.askearly.settings.Settings;
+import net.askearly.views.GuiApp;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -11,5 +12,8 @@ public class Main {
     static void main() {
         Settings settings = new Settings();
         settings.init();
+
+        GuiApp guiApp = new GuiApp(settings);
+        guiApp.init();
     }
 }
