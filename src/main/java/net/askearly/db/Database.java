@@ -31,6 +31,10 @@ public class Database {
     }
 
     public Note getote(long id) {
-        return new Note(3, "Title", "Content", "Filename", null, null);
+        return new Note(3, "Title", "Content", null, null, null);
+    }
+
+    public void updateNote(Note note) {
+        // todo update note
     }
 }

@@ -4,6 +4,7 @@ import net.askearly.actions.SaveNoteAction;
 import net.askearly.model.Note;
 import net.askearly.model.NoteTableModel;
 import net.askearly.settings.Settings;
+import net.askearly.swing.ContextMenuTextArea;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,31 +18,45 @@ public class NewNoteScreen extends JDialog {
     private final NoteTableModel model;
     private final long id;
     private final JTextField titleField = new JTextField(20);
-    private final JTextArea content = new JTextArea();
-    private final AtomicReference<File> selectedFile =  new AtomicReference<>();
-    private JLabel fileNameLabel = new JLabel("");
+    private final ContextMenuTextArea content = new ContextMenuTextArea();
+    private final AtomicReference<File> selectedFile = new AtomicReference<>();
+    private final JLabel fileNameLabel = new JLabel("");
 
     public NewNoteScreen(Settings settings, NoteTableModel model, long id) {
         this.settings = settings;
         this.model = model;
         this.id = id;
 
+        generateForm(settings);
+    }
+
+    public NewNoteScreen(Settings settings, NoteTableModel model, long id, Note note) {
+        this.settings =  settings;
+        this.model = model;
+        this.id = id;
+        titleField.setText(note.getTitle());
+        content.setText(note.getContent());
+        content.setCaretPosition(0);
+        if (note.getFilename() != null) {
+            fileNameLabel.setText(note.getFilename());
+            if (!fileNameLabel.getText().isEmpty()) {
+                selectedFile.set(new File(fileNameLabel.getText()));
+            }
+        }
+
+        generateForm(settings);
+    }
+
+    private void generateForm(Settings settings) {
         setTitle(settings.getProperties().getProperty("title.new.note"));
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        setModal(true);
         setLayout(new BorderLayout());
         setSize(400, 400);
         setResizable(false);
         add(createForm(), BorderLayout.CENTER);
         setLocationRelativeTo(null);
         setVisible(true);
-    }
-
-    public NewNoteScreen(Settings settings, NoteTableModel model, long id, Note note) {
-        this(settings, model, id);
-        titleField.setText(note.getTitle());
-        content.setText(note.getContent());
-        content.setCaretPosition(0);
-        fileNameLabel.setText(note.getFilename());
     }
 
     private JPanel createForm() {
@@ -68,7 +83,9 @@ public class NewNoteScreen extends JDialog {
         filePanel.add(fileLabel);
 
         JButton openButton = new JButton(settings.getProperties().getProperty("button.note.open"));
-        openButton.setEnabled(false);
+        if (selectedFile.get() == null) {
+            openButton.setEnabled(false);
+        }
 
         JButton clearButton = new JButton(settings.getProperties().getProperty("button.note.clear"));
         clearButton.setEnabled(false);
@@ -84,7 +101,9 @@ public class NewNoteScreen extends JDialog {
                 clearButton.setEnabled(true);
             }
         });
-        filePanel.add(fileButton);
+        if (selectedFile.get() == null) {
+            filePanel.add(fileButton);
+        }
 
         clearButton.addActionListener(e -> {
             fileNameLabel.setText("");
@@ -118,7 +137,11 @@ public class NewNoteScreen extends JDialog {
         buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
 
         JButton saveButton = new JButton(settings.getProperties().getProperty("button.note.save"));
-        saveButton.setActionCommand("save.note");
+        if (getId() > 0) {
+            saveButton.setActionCommand("update.note");
+        } else {
+            saveButton.setActionCommand("save.note");
+        }
         saveButton.addActionListener(e -> {
             new SaveNoteAction(this).execute(e);
             this.dispose();
