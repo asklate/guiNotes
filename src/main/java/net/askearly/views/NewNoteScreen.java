@@ -110,7 +110,7 @@ public class NewNoteScreen extends JDialog {
         JButton saveButton = new JButton(settings.getProperties().getProperty("button.note.save"));
         saveButton.setActionCommand("save.note");
         saveButton.addActionListener(e -> {
-            new SaveNoteAction(this).execute();
+            new SaveNoteAction(this).execute(e);
             this.dispose();
         });
         buttonPanel.add(saveButton);

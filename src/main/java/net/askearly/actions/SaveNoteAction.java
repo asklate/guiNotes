@@ -27,15 +27,17 @@ public class SaveNoteAction implements Executiable {
     }
 
     @Override
-    public void execute() {
-        String fileName = null;
-        if (this.selectedFile.get() != null) {
-            fileName = this.selectedFile.get().getAbsolutePath();
+    public void execute(ActionEvent e) {
+        if (e.getActionCommand().equals("save.note")) {
+            String fileName = null;
+            if (this.selectedFile.get() != null) {
+                fileName = this.selectedFile.get().getAbsolutePath();
+            }
+            Note note = new Note(0, this.title, this.content, fileName, null, null);
+            System.out.println(note);
+            this.settings.getDatabase().saveNote(note);
+            this.model.setDataList(settings.getDatabase().getAllNotes());
+            this.model.fireTableDataChanged();
         }
-        Note note = new Note(0, this.title, this.content, fileName, null, null);
-        System.out.println(note);
-        this.settings.getDatabase().saveNote(note);
-        this.model.setDataList(settings.getDatabase().getAllNotes());
-        this.model.fireTableDataChanged();
     }
 }
