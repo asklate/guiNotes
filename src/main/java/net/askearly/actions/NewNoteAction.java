@@ -20,7 +20,7 @@ public class NewNoteAction implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getActionCommand().equals("new.note")) {
-            new NewNoteScreen(settings, model);
+            new NewNoteScreen(settings, model, 0);
         }
     }
 }

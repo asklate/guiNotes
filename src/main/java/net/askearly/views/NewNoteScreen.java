@@ -14,13 +14,15 @@ public class NewNoteScreen extends JDialog {
 
     private final Settings settings;
     private final NoteTableModel model;
+    private final long id;
     private final JTextField titleField = new JTextField(20);
     private final JTextArea content = new JTextArea();
     private final AtomicReference<File> selectedFile =  new AtomicReference<>();
 
-    public NewNoteScreen(Settings settings, NoteTableModel model) {
+    public NewNoteScreen(Settings settings, NoteTableModel model, long id) {
         this.settings = settings;
         this.model = model;
+        this.id = id;
 
         setTitle(settings.getProperties().getProperty("title.new.note"));
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -130,6 +132,10 @@ public class NewNoteScreen extends JDialog {
 
     public NoteTableModel getModel() {
         return model;
+    }
+
+    public long getId() {
+        return id;
     }
 
     public JTextField getTitleField() {
