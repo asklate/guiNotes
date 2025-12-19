@@ -7,6 +7,7 @@ import org.apache.logging.log4j.Logger;
 import org.flywaydb.core.Flyway;
 
 import javax.swing.*;
+import java.util.Arrays;
 
 public class Main {
 
@@ -16,6 +17,8 @@ public class Main {
     static void main(String[] args) {
         settings = new Settings();
         settings.init();
+
+        logger.info("Program called with arguments: {}", Arrays.toString(args));
 
         if (args.length == 1 && args[0].equals("--flyway")) {
             Flyway flyway = Flyway.configure()
