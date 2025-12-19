@@ -1,9 +1,12 @@
 package net.askearly.views;
 
+import net.askearly.db.SQLiteConnectionPoolManager;
 import net.askearly.settings.Settings;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class GuiApp {
 
@@ -22,6 +25,11 @@ public class GuiApp {
         frame.setLocationRelativeTo(null);
         frame.setLayout(new BorderLayout());
         frame.add(createJTabbedPane(), BorderLayout.CENTER);
+        frame.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                SQLiteConnectionPoolManager.closeConnection();
+            }
+        });
         frame.setVisible(true);
     }
 
