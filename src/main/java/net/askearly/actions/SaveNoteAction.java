@@ -10,7 +10,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class SaveNoteAction {
+public class SaveNoteAction implements Executiable {
 
     private final Settings settings;
     private final NoteTableModel model;
@@ -26,6 +26,7 @@ public class SaveNoteAction {
         this.selectedFile = newNoteScreen.getSelectedFile();
     }
 
+    @Override
     public void execute() {
         String fileName = null;
         if (this.selectedFile.get() != null) {

@@ -7,6 +7,7 @@ import net.askearly.settings.Settings;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class NewNoteScreen extends JDialog {
@@ -56,6 +57,12 @@ public class NewNoteScreen extends JDialog {
 
         JLabel fileNameLabel = new JLabel("");
 
+        JButton openButton = new JButton(settings.getProperties().getProperty("button.note.open"));
+        openButton.setEnabled(false);
+
+        JButton clearButton = new JButton(settings.getProperties().getProperty("button.note.clear"));
+        clearButton.setEnabled(false);
+
         JButton fileButton = new JButton(settings.getProperties().getProperty("button.note.file"));
         fileButton.addActionListener(e -> {
             JFileChooser chooser = new JFileChooser();
@@ -63,16 +70,28 @@ public class NewNoteScreen extends JDialog {
             if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
                 selectedFile.set(chooser.getSelectedFile());
                 fileNameLabel.setText(selectedFile.get().getAbsolutePath());
+                openButton.setEnabled(true);
+                clearButton.setEnabled(true);
             }
         });
         filePanel.add(fileButton);
 
-        JButton clearButton = new JButton(settings.getProperties().getProperty("button.note.clear"));
         clearButton.addActionListener(e -> {
             fileNameLabel.setText("");
             selectedFile.set(null);
+            openButton.setEnabled(false);
+            clearButton.setEnabled(false);
         });
         filePanel.add(clearButton);
+
+        openButton.addActionListener(e -> {
+            try {
+                Desktop.getDesktop().open(new File(selectedFile.get().getAbsolutePath()));
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+        filePanel.add(openButton);
 
         topPanel.add(filePanel);
 
@@ -92,12 +111,13 @@ public class NewNoteScreen extends JDialog {
         saveButton.setActionCommand("save.note");
         saveButton.addActionListener(e -> {
             new SaveNoteAction(this).execute();
+            this.dispose();
         });
         buttonPanel.add(saveButton);
 
-        JButton cancelbutton = new JButton(settings.getProperties().getProperty("button.note.cancel"));
-        cancelbutton.addActionListener(e -> this.dispose());
-        buttonPanel.add(cancelbutton);
+        JButton cancelButton = new JButton(settings.getProperties().getProperty("button.note.cancel"));
+        cancelButton.addActionListener(e -> this.dispose());
+        buttonPanel.add(cancelButton);
 
         panel.add(buttonPanel, BorderLayout.SOUTH);
 
