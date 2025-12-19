@@ -30,7 +30,7 @@ public class Database {
         notes.add(note);
     }
 
-    public Note getNote(long l) {
+    public Note getote(long id) {
         return new Note(3, "Title", "Content", "Filename", null, null);
     }
 }
