@@ -13,10 +13,10 @@ public class SQLiteConnectionPoolManager {
     private static final HikariDataSource dataSource;
 
     static {
-        Properties properties = PropertyUtils.getProperties("db.properties");
+        Properties databaseProperties = PropertyUtils.getProperties("db.properties");
         HikariConfig config = new HikariConfig();
 
-        config.setJdbcUrl(properties.getProperty(properties.getProperty("datasource.url")));
+        config.setJdbcUrl(databaseProperties.getProperty("datasource.url"));
 
         config.setMaximumPoolSize(5);
         config.setConnectionTimeout(30000); // 30 seconds

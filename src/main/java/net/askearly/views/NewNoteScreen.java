@@ -180,4 +180,8 @@ public class NewNoteScreen extends JDialog {
     public AtomicReference<File> getSelectedFile() {
         return selectedFile;
     }
+
+    public void showMessage(String errorMessage) {
+        JOptionPane.showMessageDialog(this, errorMessage, "Error", JOptionPane.ERROR_MESSAGE);
+    }
 }

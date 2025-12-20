@@ -4,6 +4,9 @@ import net.askearly.model.Note;
 import net.askearly.model.NoteTableModel;
 import net.askearly.settings.Settings;
 import net.askearly.views.NewNoteScreen;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
@@ -11,12 +14,19 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 public class SaveNoteAction implements Executiable {
 
+    private static final Logger logger = LogManager.getLogger(SaveNoteAction.class);
+    private final NewNoteScreen parent;
     private final Settings settings;
     private final NoteTableModel model;
     private final long id;
@@ -31,35 +41,66 @@ public class SaveNoteAction implements Executiable {
         this.title = newNoteScreen.getTitleField().getText();
         this.content = newNoteScreen.getContent().getText();
         this.selectedFile = newNoteScreen.getSelectedFile();
+        this.parent = newNoteScreen;
     }
 
     @Override
     public void execute(ActionEvent e) {
-        if (e.getActionCommand().equals("save.note")) {
-            String fileName = null;
-            if (this.selectedFile.get() != null) {
-                fileName = saveFile(this.selectedFile.get());
-            }
-            Note note = new Note(id, this.title, this.content, fileName, null, null);
+        List<String> errors = new ArrayList<>();
 
-            this.settings.getDatabase().saveNote(note);
-            this.model.setDataList(settings.getDatabase().getAllNotes());
-            this.model.fireTableDataChanged();
-        } else if (e.getActionCommand().equals("update.note")) {
-            String fileName = null;
-            if (this.selectedFile.get() != null) {
-                fileName = this.selectedFile.get().getAbsolutePath();
-            }
-            Note existingNote = settings.getDatabase().getote(this.id);
-            if (fileName != null && !existingNote.getFilename().equals(fileName)) {
-                fileName = saveFile(this.selectedFile.get());
-            }
-            Note note = new Note(id, this.title, this.content, fileName, null, null);
+        validate(errors);
 
-            this.settings.getDatabase().updateNote(note);
-            this.model.setDataList(settings.getDatabase().getAllNotes());
-            this.model.fireTableDataChanged();
+        if (errors.isEmpty()) {
+            if (e.getActionCommand().equals("save.note")) {
+                String fileName = null;
+                if (this.selectedFile.get() != null) {
+                    fileName = saveFile(this.selectedFile.get());
+                }
+                Note note = new Note(id, this.title, this.content, fileName, null, null);
 
+                this.settings.getDatabase().saveNote(note);
+                this.model.setDataList(settings.getDatabase().getAllNotes());
+                this.model.fireTableDataChanged();
+            } else if (e.getActionCommand().equals("update.note")) {
+                String fileName = null;
+                if (this.selectedFile.get() != null) {
+                    fileName = this.selectedFile.get().getAbsolutePath();
+                }
+                Note existingNote = settings.getDatabase().getote(this.id);
+
+                logger.info("Existing note: {}", existingNote);
+
+                if (existingNote.getFilename() == null && fileName != null) {
+                    logger.info("Saving note 1: {} {}", existingNote.getFilename(), fileName);
+                    fileName = saveFile(this.selectedFile.get());
+                } else if (fileName != null && !existingNote.getFilename().equals(fileName)) {
+                    logger.info("Saving note 2: {} {}", existingNote.getFilename(), fileName);
+                    fileName = saveFile(this.selectedFile.get());
+                }
+
+                Note note = new Note(id, this.title, this.content, fileName, null, null);
+
+                logger.info("Note To Save {}", note);
+
+                this.settings.getDatabase().updateNote(note);
+                this.model.setDataList(settings.getDatabase().getAllNotes());
+                this.model.fireTableDataChanged();
+            }
+        } else {
+            String errorMessage = errors.stream()
+                    .map(Object::toString)
+                    .collect(Collectors.joining(", "));
+            parent.showMessage(errorMessage);
+        }
+    }
+
+    private void validate(List<String> errors) {
+        if (title.trim().isEmpty()) {
+            errors.add("Title cannot be empty");
+        }
+
+        if (content.trim().isEmpty()) {
+            errors.add("Content cannot be empty");
         }
     }
 
@@ -72,7 +113,7 @@ public class SaveNoteAction implements Executiable {
                 now
         );
 
-        Path fileName = Paths.get(directory.toString(), "/", file.getName());
+        Path fileName = Paths.get(directory.toString(), "/", makeUnique(directory.toString(), file.getName()));
 
         if (!Files.exists(directory)) {
             try {
@@ -82,8 +123,32 @@ public class SaveNoteAction implements Executiable {
             }
         }
 
-        file.renameTo(fileName.toFile());
+        try {
+            Files.copy(file.toPath(), fileName, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            logger.error("Couldn't copy file {}", file.getAbsolutePath(), e);
+        }
 
-        return fileName.toString();
+        return fileName.toFile().getAbsolutePath();
+    }
+
+    private String makeUnique(String directory, String fileName) {
+        String basename = FilenameUtils.getBaseName(fileName);
+        String extension = FilenameUtils.getExtension(fileName);
+
+        if (!extension.isEmpty()) {
+            extension = "." + extension;
+        }
+
+        File file = new File(directory, basename + extension);
+        int counter = 0;
+
+        while (file.exists()) {
+            counter++;
+            String newName = basename + "(" + counter + ")" + extension;
+            file = new File(directory, newName);
+        }
+
+        return file.getName();
     }
 }

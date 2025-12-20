@@ -38,7 +38,7 @@ public class NoteTableModel extends AbstractTableModel {
             case 0: return note.getId();
             case 1: return note.getTitle();
             case 2: return note.getContent();
-            case 3: return note.getFilename();
+            case 3: return note.getFilename() == null ? "" :  note.getFilename();
             default: return null;
         }
     }

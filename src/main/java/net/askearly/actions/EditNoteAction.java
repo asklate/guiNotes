@@ -27,7 +27,7 @@ public class EditNoteAction implements ActionListener {
             int selectedRowIndex = table.getSelectedRow();
             if (selectedRowIndex >= 0) {
                 int modelRowIndex = table.convertRowIndexToModel(selectedRowIndex);
-                Object firstColumnValue = table.getModel().getValueAt(modelRowIndex, 0);
+                Object firstColumnValue = model.getValueAt(modelRowIndex, 0);
                 Note note = settings.getDatabase().getote(Long.parseLong(firstColumnValue.toString()));
                 new NewNoteScreen(settings, model, Long.parseLong(firstColumnValue.toString()), note);
             }

@@ -18,6 +18,10 @@ public class Note {
         this.updatedDt = updatedDt;
     }
 
+    public Note() {
+
+    }
+
     public long getId() {
         return id;
     }
