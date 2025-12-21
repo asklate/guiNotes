@@ -12,8 +12,6 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 public class NoteTab extends JPanel {
