@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class NewNoteScreen extends JDialog {
+public class NewNoteScreen extends JFrame {
 
     private final Settings settings;
     private final NoteTableModel model;
@@ -48,9 +48,12 @@ public class NewNoteScreen extends JDialog {
     }
 
     private void generateForm(Settings settings) {
-        setTitle(settings.getProperties().getProperty("title.new.note"));
+        if (getId() > 0) {
+            setTitle(settings.getProperties().getProperty("title.edit.note"));
+        } else {
+            setTitle(settings.getProperties().getProperty("title.new.note"));
+        }
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        setModal(true);
         setLayout(new BorderLayout());
         setSize(650, 400);
         setResizable(false);
