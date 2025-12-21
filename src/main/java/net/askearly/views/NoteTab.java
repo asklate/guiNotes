@@ -51,6 +51,10 @@ public class NoteTab extends JPanel {
                         } else {
                             openButton.setEnabled(false);
                         }
+                    } else {
+                        editNoteButton.setEnabled(false);
+                        deleteButton.setEnabled(false);
+                        openButton.setEnabled(false);
                     }
                 }
             }

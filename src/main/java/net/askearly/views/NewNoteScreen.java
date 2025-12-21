@@ -5,11 +5,13 @@ import net.askearly.model.Note;
 import net.askearly.model.NoteTableModel;
 import net.askearly.settings.Settings;
 import net.askearly.swing.ContextMenuTextArea;
+import org.apache.commons.io.FilenameUtils;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class NewNoteScreen extends JDialog {
@@ -38,10 +40,8 @@ public class NewNoteScreen extends JDialog {
         content.setText(note.getContent());
         content.setCaretPosition(0);
         if (note.getFilename() != null) {
-            fileNameLabel.setText(note.getFilename());
-            if (!fileNameLabel.getText().isEmpty()) {
-                selectedFile.set(new File(fileNameLabel.getText()));
-            }
+            fileNameLabel.setText(Paths.get(note.getFilename()).getFileName().toString());
+            selectedFile.set(new File(note.getFilename()));
         }
 
         generateForm(settings);
@@ -52,7 +52,7 @@ public class NewNoteScreen extends JDialog {
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setModal(true);
         setLayout(new BorderLayout());
-        setSize(400, 400);
+        setSize(600, 300);
         setResizable(false);
         add(createForm(), BorderLayout.CENTER);
         setLocationRelativeTo(null);
@@ -89,6 +89,9 @@ public class NewNoteScreen extends JDialog {
 
         JButton clearButton = new JButton(settings.getProperties().getProperty("button.note.clear"));
         clearButton.setEnabled(false);
+        if (getId() > 0) {
+            clearButton.setVisible(false);
+        }
 
         JButton fileButton = new JButton(settings.getProperties().getProperty("button.note.file"));
         fileButton.addActionListener(e -> {
@@ -96,7 +99,7 @@ public class NewNoteScreen extends JDialog {
             chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
             if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
                 selectedFile.set(chooser.getSelectedFile());
-                fileNameLabel.setText(selectedFile.get().getAbsolutePath());
+                fileNameLabel.setText(selectedFile.get().toPath().getFileName().toString());
                 openButton.setEnabled(true);
                 clearButton.setEnabled(true);
             }
