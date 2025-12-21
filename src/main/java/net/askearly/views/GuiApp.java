@@ -13,6 +13,7 @@ public class GuiApp {
 
     private final Settings settings;
     private JFrame frame;
+    private JTabbedPane tabs;
 
     public GuiApp(Settings settings) {
         this.settings = settings;
@@ -46,9 +47,21 @@ public class GuiApp {
 
         JMenu fileMenu = new JMenu("File");
         fileMenu.setMnemonic(KeyEvent.VK_F);
+            JMenuItem noteMenuItem = new JMenuItem("Notes");
+            noteMenuItem.setMnemonic(KeyEvent.VK_N);
+            noteMenuItem.addActionListener(_ -> tabs.setSelectedIndex(0));
+            fileMenu.add(noteMenuItem);
+
+            JMenuItem journalMenuItem = new JMenuItem("Journal");
+            journalMenuItem.setMnemonic(KeyEvent.VK_J);
+            journalMenuItem.addActionListener(_ -> tabs.setSelectedIndex(1));
+            fileMenu.add(journalMenuItem);
+
+            fileMenu.addSeparator();
+
             JMenuItem exitMenuItem = new JMenuItem("Exit");
             exitMenuItem.setMnemonic(KeyEvent.VK_X);
-            exitMenuItem.addActionListener(e -> frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING)));
+            exitMenuItem.addActionListener(_ -> frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING)));
             fileMenu.add(exitMenuItem);
 
         menuBar.add(fileMenu);
@@ -57,10 +70,11 @@ public class GuiApp {
     }
 
     private JTabbedPane createJTabbedPane() {
-        JTabbedPane tabbedPane = new JTabbedPane();
+        tabs = new JTabbedPane();
 
-        tabbedPane.add(settings.getProperties().getProperty("tab.notes"), new NoteTab(settings));
+        tabs.add(settings.getProperties().getProperty("tab.notes"), new NoteTab(settings));
+        tabs.add(settings.getProperties().getProperty("tab.journal"), new JournalTab(settings));
 
-        return tabbedPane;
+        return tabs;
     }
 }
