@@ -1,19 +1,18 @@
 package net.askearly.model;
 
-import java.io.File;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
 
-public class NoteTableModel extends AbstractTableModel {
+public class JournalTableModel extends AbstractTableModel {
 
-    private List<Note> dataList;
+    private List<Journal> dataList;
     private final String[] columnNames = {"ID", "Title", "Content", "Filename"};
 
-    public NoteTableModel(List<Note> dataList) {
+    public JournalTableModel(List<Journal> dataList) {
         this.dataList = dataList;
     }
 
-    public void setDataList(List<Note> dataList) {
+    public void setDataList(List<Journal> dataList) {
         this.dataList = dataList;
     }
 
@@ -34,12 +33,11 @@ public class NoteTableModel extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int row, int col) {
-        Note note = dataList.get(row);
+        Journal journal = dataList.get(row);
         return switch (col) {
-            case 0 -> note.getId();
-            case 1 -> note.getTitle();
-            case 2 -> note.getContent();
-            case 3 -> note.getFilename() == null ? "" : new File(note.getFilename()).toPath().getFileName().toString();
+            case 0 -> journal.getId();
+            case 1 -> journal.getContent();
+            case 2 -> journal.getCreatedDt();
             default -> null;
         };
     }
@@ -53,12 +51,11 @@ public class NoteTableModel extends AbstractTableModel {
     // Optional: Update the underlying data when a user edits a cell
     @Override
     public void setValueAt(Object value, int row, int col) {
-        Note note = dataList.get(row);
+        Journal journal = dataList.get(row);
         switch (col) {
-            case 0: note.setId((long) value); break;
-            case 1: note.setTitle((String) value); break;
-            case 2: note.setContent((String) value); break;
-            case 3: note.setFilename((String) value); break;
+            case 0: journal.setId((long) value); break;
+            case 1: journal.setContent((String) value); break;
+            case 2: journal.setCreatedDt((String) value); break;
         }
         fireTableCellUpdated(row, col); // Notify the JTable that data changed
     }
