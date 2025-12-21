@@ -3,6 +3,7 @@ package net.askearly.views;
 import net.askearly.actions.DeleteNoteAction;
 import net.askearly.actions.EditNoteAction;
 import net.askearly.actions.NewNoteAction;
+import net.askearly.actions.OpenNoteFileAction;
 import net.askearly.model.Note;
 import net.askearly.model.NoteTableModel;
 import net.askearly.settings.Settings;
@@ -81,17 +82,8 @@ public class NoteTab extends JPanel {
         panel.add(deleteButton);
 
         openButton = new JButton(settings.getProperties().getProperty("button.note.open"));
-        openButton.addActionListener(e -> {
-            int selectedRow = table.getSelectedRow();
-            if (selectedRow != -1) {
-                Object cellData = model.getValueAt(selectedRow, 3);
-                try {
-                    Desktop.getDesktop().open(new File(cellData.toString()));
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
-            }
-        });
+        openButton.setActionCommand("open.note.file");
+        openButton.addActionListener(new OpenNoteFileAction(settings, model, table));
         openButton.setEnabled(false);
         panel.add(openButton);
 
