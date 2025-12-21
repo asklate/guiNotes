@@ -5,10 +5,13 @@ import net.askearly.model.Note;
 import net.askearly.model.NoteTableModel;
 import net.askearly.settings.Settings;
 import net.askearly.swing.ContextMenuTextArea;
-import org.apache.commons.io.FilenameUtils;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -80,8 +83,6 @@ public class NewNoteScreen extends JFrame {
 
         topPanel.add(titlePanel);
 
-        JPanel filePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-
         JLabel fileLabel = new JLabel(settings.getProperties().getProperty("label.note.file"));
         fileLabel.setLayout(new FlowLayout(FlowLayout.LEFT));
         titlePanel.add(fileLabel);
@@ -129,6 +130,41 @@ public class NewNoteScreen extends JFrame {
         });
         titlePanel.add(openButton);
 
+        Border marginBorder = new EmptyBorder(10, 20, 10, 20);
+        fileNameLabel.setBorder(marginBorder);
+        fileNameLabel.addMouseListener(new MouseListener() {
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (!fileNameLabel.getText().isEmpty()) {
+                    openButton.doClick();
+                }
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                if (!fileNameLabel.getText().isEmpty()) {
+                    fileNameLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                    fileNameLabel.setForeground(Color.BLUE);
+                    fileNameLabel.setToolTipText(settings.getProperties().getProperty("label.note.file.tooltip"));
+                }
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                fileNameLabel.setForeground(Color.BLACK);
+            }
+        });
         topPanel.add(fileNameLabel);
 
         panel.add(topPanel, BorderLayout.NORTH);
