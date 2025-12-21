@@ -1,5 +1,5 @@
 CREATE TABLE notes (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id INTEGER PRIMARY KEY,
     title TEXT NULL,
     content TEXT NULL,
     filename TEXT NULL,

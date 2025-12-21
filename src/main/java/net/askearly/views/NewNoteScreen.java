@@ -20,7 +20,7 @@ public class NewNoteScreen extends JDialog {
     private final NoteTableModel model;
     private final long id;
     private final JTextField titleField = new JTextField(20);
-    private final ContextMenuTextArea content = new ContextMenuTextArea();
+    private final ContextMenuTextArea content = new ContextMenuTextArea(20, 30);
     private final AtomicReference<File> selectedFile = new AtomicReference<>();
     private final JLabel fileNameLabel = new JLabel("");
 
@@ -52,10 +52,10 @@ public class NewNoteScreen extends JDialog {
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setModal(true);
         setLayout(new BorderLayout());
-        setSize(600, 300);
+        setSize(650, 300);
         setResizable(false);
         add(createForm(), BorderLayout.CENTER);
-        setLocationRelativeTo(null);
+        setLocationRelativeTo(this.getParent());
         setVisible(true);
     }
 
@@ -64,7 +64,7 @@ public class NewNoteScreen extends JDialog {
         panel.setLayout(new BorderLayout());
 
         JPanel topPanel = new JPanel();
-        topPanel.setLayout(new GridLayout(3, 1));
+        topPanel.setLayout(new GridLayout(2, 1));
 
         JPanel titlePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
@@ -80,7 +80,7 @@ public class NewNoteScreen extends JDialog {
 
         JLabel fileLabel = new JLabel(settings.getProperties().getProperty("label.note.file"));
         fileLabel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        filePanel.add(fileLabel);
+        titlePanel.add(fileLabel);
 
         JButton openButton = new JButton(settings.getProperties().getProperty("button.note.open"));
         if (selectedFile.get() == null) {
@@ -105,7 +105,7 @@ public class NewNoteScreen extends JDialog {
             }
         });
         if (selectedFile.get() == null) {
-            filePanel.add(fileButton);
+            titlePanel.add(fileButton);
         }
 
         clearButton.addActionListener(e -> {
@@ -114,7 +114,7 @@ public class NewNoteScreen extends JDialog {
             openButton.setEnabled(false);
             clearButton.setEnabled(false);
         });
-        filePanel.add(clearButton);
+        titlePanel.add(clearButton);
 
         openButton.addActionListener(e -> {
             try {
@@ -123,17 +123,14 @@ public class NewNoteScreen extends JDialog {
                 throw new RuntimeException(ex);
             }
         });
-        filePanel.add(openButton);
+        titlePanel.add(openButton);
 
-        topPanel.add(filePanel);
+        //topPanel.add(filePanel);
 
         topPanel.add(fileNameLabel);
 
         panel.add(topPanel, BorderLayout.NORTH);
 
-        content.setWrapStyleWord(true);
-        content.setLineWrap(true);
-        content.setMargin(new Insets(10, 10, 10, 10));
         panel.add(new JScrollPane(content), BorderLayout.CENTER);
 
         JPanel buttonPanel = new JPanel();

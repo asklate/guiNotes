@@ -7,11 +7,12 @@ import java.awt.event.MouseEvent;
 
 public class ContextMenuTextArea extends JTextArea {
 
-    public ContextMenuTextArea() {
-        super();
+    public ContextMenuTextArea(int rows, int columns) {
+        super(null, null, rows, columns);
 
         setLineWrap(true);
         setWrapStyleWord(true);
+        setMargin(new Insets(10, 10, 10, 10));
 
         // Create popup menu
         JPopupMenu popupMenu = new JPopupMenu();
