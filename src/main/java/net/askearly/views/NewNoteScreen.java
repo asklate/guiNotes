@@ -20,7 +20,7 @@ public class NewNoteScreen extends JDialog {
     private final NoteTableModel model;
     private final long id;
     private final JTextField titleField = new JTextField(20);
-    private final ContextMenuTextArea content = new ContextMenuTextArea(20, 30);
+    private final ContextMenuTextArea content = new ContextMenuTextArea(10, 30);
     private final AtomicReference<File> selectedFile = new AtomicReference<>();
     private final JLabel fileNameLabel = new JLabel("");
 
@@ -52,7 +52,7 @@ public class NewNoteScreen extends JDialog {
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setModal(true);
         setLayout(new BorderLayout());
-        setSize(650, 300);
+        setSize(650, 400);
         setResizable(false);
         add(createForm(), BorderLayout.CENTER);
         setLocationRelativeTo(this.getParent());
@@ -124,8 +124,6 @@ public class NewNoteScreen extends JDialog {
             }
         });
         titlePanel.add(openButton);
-
-        //topPanel.add(filePanel);
 
         topPanel.add(fileNameLabel);
 
