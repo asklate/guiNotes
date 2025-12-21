@@ -23,6 +23,7 @@ public class NewNoteScreen extends JFrame {
     private final ContextMenuTextArea content = new ContextMenuTextArea(10, 30);
     private final AtomicReference<File> selectedFile = new AtomicReference<>();
     private final JLabel fileNameLabel = new JLabel("");
+    private JProgressBar progressBar = new JProgressBar();
 
     public NewNoteScreen(Settings settings, NoteTableModel model, long id) {
         this.settings = settings;
@@ -137,6 +138,8 @@ public class NewNoteScreen extends JFrame {
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
 
+        buttonPanel.add(progressBar);
+
         JButton saveButton = new JButton(settings.getProperties().getProperty("button.note.save"));
         if (getId() > 0) {
             saveButton.setActionCommand("update.note");
@@ -145,7 +148,6 @@ public class NewNoteScreen extends JFrame {
         }
         saveButton.addActionListener(e -> {
             new SaveNoteAction(this).execute(e);
-            this.dispose();
         });
         buttonPanel.add(saveButton);
 
@@ -180,6 +182,10 @@ public class NewNoteScreen extends JFrame {
 
     public AtomicReference<File> getSelectedFile() {
         return selectedFile;
+    }
+
+    public JProgressBar getProgressBar() {
+        return progressBar;
     }
 
     public void showMessage(String errorMessage) {

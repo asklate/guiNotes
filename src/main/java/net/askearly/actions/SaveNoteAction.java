@@ -3,6 +3,7 @@ package net.askearly.actions;
 import net.askearly.model.Note;
 import net.askearly.model.NoteTableModel;
 import net.askearly.settings.Settings;
+import net.askearly.utils.FileCopyWorker;
 import net.askearly.views.NewNoteScreen;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
@@ -85,6 +86,7 @@ public class SaveNoteAction implements Executiable {
                 this.settings.getDatabase().updateNote(note);
                 this.model.setDataList(settings.getDatabase().getAllNotes());
                 this.model.fireTableDataChanged();
+                parent.dispose();
             }
         } else {
             String errorMessage = errors.stream()
@@ -123,11 +125,7 @@ public class SaveNoteAction implements Executiable {
             }
         }
 
-        try {
-            Files.copy(file.toPath(), fileName, StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-            logger.error("Couldn't copy file {}", file.getAbsolutePath(), e);
-        }
+        new FileCopyWorker(file, fileName.toFile(), parent.getProgressBar(), parent).execute();
 
         return fileName.toFile().getAbsolutePath();
     }
