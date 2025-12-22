@@ -31,13 +31,7 @@ public class Database {
                 ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                Note note = new Note();
-                note.setId(rs.getLong(Tables.Notes.id.name()));
-                note.setTitle(rs.getString(Tables.Notes.title.name()));
-                note.setContent(rs.getString(Tables.Notes.content.name()));
-                note.setFilename(rs.getString(Tables.Notes.filename.name()));
-                note.setCreatedDt(rs.getString(Tables.Notes.created_dt.name()));
-                note.setUpdatedDt(rs.getString(Tables.Notes.updated_dt.name()));
+                Note note = new NoteResults(rs).getNote();
                 notes.add(note);
             }
         } catch (SQLException e) {
@@ -79,13 +73,7 @@ public class Database {
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                note = new Note();
-                note.setId(rs.getLong(Tables.Notes.id.name()));
-                note.setTitle(rs.getString(Tables.Notes.title.name()));
-                note.setContent(rs.getString(Tables.Notes.content.name()));
-                note.setFilename(rs.getString(Tables.Notes.filename.name()));
-                note.setCreatedDt(rs.getString(Tables.Notes.created_dt.name()));
-                note.setUpdatedDt(rs.getString(Tables.Notes.updated_dt.name()));
+                note = new NoteResults(rs).getNote();
             }
         } catch (SQLException e) {
             logger.error("Get Note Error", e);
