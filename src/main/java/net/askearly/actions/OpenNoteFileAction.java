@@ -3,7 +3,6 @@ package net.askearly.actions;
 import net.askearly.model.Note;
 import net.askearly.model.NoteTableModel;
 import net.askearly.settings.Settings;
-import net.askearly.views.NewNoteScreen;
 
 import javax.swing.*;
 import java.awt.*;
@@ -31,7 +30,7 @@ public class OpenNoteFileAction  implements ActionListener {
             if (selectedRowIndex >= 0) {
                 int modelRowIndex = table.convertRowIndexToModel(selectedRowIndex);
                 Object firstColumnValue = model.getValueAt(modelRowIndex, 0);
-                Note note = settings.getDatabase().getote(Long.parseLong(firstColumnValue.toString()));
+                Note note = settings.getDatabase().getNote(Long.parseLong(firstColumnValue.toString()));
                 try {
                     Desktop.getDesktop().open(new File(note.getFilename()));
                 } catch (IOException ex) {

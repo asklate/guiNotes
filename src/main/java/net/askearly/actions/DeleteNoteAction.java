@@ -10,7 +10,6 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class DeleteNoteAction implements Executiable {
@@ -36,7 +35,7 @@ public class DeleteNoteAction implements Executiable {
                 Object firstColumnValue = model.getValueAt(modelRowIndex, 0);
                 logger.info("Note to delete {}", firstColumnValue);
                 long id = Long.parseLong(firstColumnValue.toString());
-                Note note = settings.getDatabase().getote(id);
+                Note note = settings.getDatabase().getNote(id);
                 if (note.getFilename() != null) {
                     deleteFile(note.getFilename());
                 }

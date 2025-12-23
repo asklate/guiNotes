@@ -2,6 +2,12 @@ package net.askearly.db;
 
 public class Tables {
 
+    public enum Journal {
+        id,
+        content,
+        created_dt;
+    }
+
     public enum Notes {
         id,
         title,

@@ -1,5 +1,6 @@
 package net.askearly.db;
 
+import net.askearly.model.Journal;
 import net.askearly.model.Note;
 import net.askearly.settings.Settings;
 import org.apache.logging.log4j.LogManager;
@@ -59,7 +60,7 @@ public class Database {
         }
     }
 
-    public Note getote(long id) {
+    public Note getNote(long id) {
         Note note = null;
 
         ResultSet rs = null;
@@ -118,6 +119,38 @@ public class Database {
             stmt.executeUpdate();
         } catch (SQLException e) {
             logger.error("Delete Note Error", e);
+        }
+    }
+
+    public List<Journal> getAllJournalEntries() {
+        List<Journal> journalEntries = new ArrayList<>();
+
+        String query = databaseProperties.getProperty("sql.all.journal.entries");
+
+        try (Connection conn = SQLiteConnectionPoolManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                Journal journalEntry = new JournalResults(rs).getJournalEntry();
+                journalEntries.add(journalEntry);
+            }
+        } catch (SQLException e) {
+            logger.error("Get All Journal Entries Error", e);
+        }
+
+        return journalEntries;
+    }
+
+    public void saveJournalEntry(String content) {
+        String query = databaseProperties.getProperty("sql.save.journal.entry");
+
+        try (Connection conn = SQLiteConnectionPoolManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, content);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            logger.error("Save Journal Entry Error", e);
         }
     }
 }

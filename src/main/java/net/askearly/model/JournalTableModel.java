@@ -6,7 +6,7 @@ import javax.swing.table.AbstractTableModel;
 public class JournalTableModel extends AbstractTableModel {
 
     private List<Journal> dataList;
-    private final String[] columnNames = {"ID", "Title", "Content", "Filename"};
+    private final String[] columnNames = {"ID", "Content", "Date"};
 
     public JournalTableModel(List<Journal> dataList) {
         this.dataList = dataList;

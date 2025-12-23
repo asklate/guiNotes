@@ -15,11 +15,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
@@ -67,7 +65,7 @@ public class SaveNoteAction implements Executiable {
                 if (this.selectedFile.get() != null) {
                     fileName = this.selectedFile.get().getAbsolutePath();
                 }
-                Note existingNote = settings.getDatabase().getote(this.id);
+                Note existingNote = settings.getDatabase().getNote(this.id);
 
                 logger.info("Existing note: {}", existingNote);
 
