@@ -153,4 +153,16 @@ public class Database {
             logger.error("Save Journal Entry Error", e);
         }
     }
+
+    public void deleteJournalEntry(long id) {
+        String query = databaseProperties.getProperty("sql.delete.journal.entry");
+
+        try (Connection conn = SQLiteConnectionPoolManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setLong(1, id);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            logger.error("Delete Journal Entry Error", e);
+        }
+    }
 }

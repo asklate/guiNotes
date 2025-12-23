@@ -1,5 +1,6 @@
 package net.askearly.views;
 
+import net.askearly.actions.DeleteJournalAction;
 import net.askearly.actions.SaveJournalAction;
 import net.askearly.model.Journal;
 import net.askearly.model.JournalTableModel;
@@ -18,6 +19,8 @@ public class JournalTab extends JPanel {
     private final ContextMenuTextArea content = new ContextMenuTextArea(10, 30);
     private JournalTableModel model;
     private JTable table;
+    private JButton deleteButton;
+    private JButton clearButton;
 
     public JournalTab(Settings settings) {
         this.settings = settings;
@@ -38,6 +41,7 @@ public class JournalTab extends JPanel {
         List<Journal> journalEntries = settings.getDatabase().getAllJournalEntries();
         model = new JournalTableModel(journalEntries);
         table = new JTable(model);
+        table.setFillsViewportHeight(false);
         ListSelectionModel selectionModel = table.getSelectionModel();
         selectionModel.addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -45,7 +49,13 @@ public class JournalTab extends JPanel {
                 if (!e.getValueIsAdjusting()) {
                     int selectedRow = table.getSelectedRow();
                     if (selectedRow != -1) {
-
+                        content.setText((String) table.getValueAt(selectedRow, 1));
+                        content.setCaretPosition(0);
+                        deleteButton.setEnabled(true);
+                        clearButton.setEnabled(true);
+                    } else  {
+                        deleteButton.setEnabled(false);
+                        clearButton.setEnabled(false);
                     }
                 }
             }
@@ -60,9 +70,36 @@ public class JournalTab extends JPanel {
     private JPanel createButtonPane() {
         JPanel buttonPane = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
+        clearButton = new JButton(settings.getProperties().getProperty("button.journal.clear"));
+        clearButton.setActionCommand("clear.journal");
+        clearButton.setEnabled(false);
+        clearButton.addActionListener(e -> {
+            table.clearSelection();
+            content.setText("");
+        });
+        buttonPane.add(clearButton);
+
+        deleteButton = new JButton(settings.getProperties().getProperty(("button.journal.delete")));
+        deleteButton.setActionCommand("delete.journal");
+        deleteButton.setEnabled(false);
+        deleteButton.addActionListener(e -> {
+            int value = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete this Journal Entry?");
+            if (value == JOptionPane.OK_OPTION) {
+                new DeleteJournalAction(settings, model, table).execute(e);
+                this.model.setDataList(settings.getDatabase().getAllJournalEntries());
+                this.model.fireTableDataChanged();
+                content.setText("");
+            }
+        });
+        buttonPane.add(deleteButton);
+
         JButton saveButton = new JButton(settings.getProperties().getProperty("button.journal.save"));
         saveButton.setActionCommand("save.journal");
         saveButton.addActionListener(e -> {
+            if (content.getText().trim().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Content is required", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             new SaveJournalAction(this).execute(e);
             content.setText("");
         });
