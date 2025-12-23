@@ -7,6 +7,7 @@ import org.apache.logging.log4j.Logger;
 import org.flywaydb.core.Flyway;
 
 import javax.swing.*;
+import java.io.File;
 import java.util.Arrays;
 
 public class Main {
@@ -20,7 +21,8 @@ public class Main {
 
         logger.info("Program called with arguments: {}", Arrays.toString(args));
 
-        if (args.length == 1 && args[0].equals("--flyway")) {
+        if ((args.length == 1 && args[0].equals("--flyway")) ||
+                !new File(settings.getDatabaseProperties().getProperty("database.file")).exists()) {
             Flyway flyway = Flyway.configure()
                     .dataSource(settings.getDatabaseProperties().getProperty("datasource.url"),
                             null,
@@ -28,9 +30,8 @@ public class Main {
                     .locations("classpath:db/migrations")
                     .load();
             flyway.migrate();
-        } else {
-            SwingUtilities.invokeLater(Main::run);
         }
+        SwingUtilities.invokeLater(Main::run);
     }
 
     static void run() {
