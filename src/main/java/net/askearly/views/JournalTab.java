@@ -16,7 +16,7 @@ import java.util.List;
 public class JournalTab extends JPanel {
 
     private final Settings settings;
-    private final ContextMenuTextArea content = new ContextMenuTextArea(10, 30);
+    private final ContextMenuTextArea content = new ContextMenuTextArea(20, 30);
     private JournalTableModel model;
     private JTable table;
     private JButton deleteButton;
