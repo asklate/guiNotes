@@ -57,9 +57,12 @@ public class SaveNoteAction implements Executiable {
                 }
                 Note note = new Note(id, this.title, this.content, fileName, null, null);
 
+                logger.info("Note To Save {}", note);
+
                 this.settings.getDatabase().saveNote(note);
                 this.model.setDataList(settings.getDatabase().getAllNotes());
                 this.model.fireTableDataChanged();
+                parent.dispose();
             } else if (e.getActionCommand().equals("update.note")) {
                 String fileName = null;
                 if (this.selectedFile.get() != null) {
