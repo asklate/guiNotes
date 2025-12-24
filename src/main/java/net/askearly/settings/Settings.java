@@ -17,6 +17,7 @@ public class Settings {
 
     public void init() {
         properties = PropertyUtils.getProperties("app.properties");
+        PropertyUtils.overrideProperies(properties, "app.properties");
         databaseProperties = PropertyUtils.getProperties("db.properties");
         database = new Database(this);
     }

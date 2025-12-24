@@ -5,8 +5,7 @@ import net.askearly.exceptions.PropertyException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Properties;
 
 public class PropertyUtils {
@@ -27,5 +26,20 @@ public class PropertyUtils {
             throw new PropertyException("Unable to load " + propertiesFileName, ex);
         }
         return properties;
+    }
+
+    public static void overrideProperies(Properties properties, String filename) {
+        if (filename == null) {
+            return;
+        }
+
+        if (new File(filename).exists()) {
+            try (FileInputStream fis = new FileInputStream(filename)) {
+                properties.load(fis);
+            } catch (IOException ex) {
+                logger.error("Unable to load {}", filename, ex);
+                throw new PropertyException("Unable to load " + filename, ex);
+            }
+        }
     }
 }

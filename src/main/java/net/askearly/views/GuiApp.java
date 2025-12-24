@@ -73,20 +73,36 @@ public class GuiApp {
 
     private JMenuBar createJMenuBar() {
         JMenuBar menuBar = new JMenuBar();
+        int loadedMenus = 0;
 
         JMenu fileMenu = new JMenu("File");
         fileMenu.setMnemonic(KeyEvent.VK_F);
+
+        if (Boolean.parseBoolean(settings.getProperties().getProperty("view.notes"))) {
             JMenuItem noteMenuItem = new JMenuItem("Notes");
             noteMenuItem.setMnemonic(KeyEvent.VK_N);
-            noteMenuItem.addActionListener(_ -> tabs.setSelectedIndex(0));
+            int finalLoadedMenus = loadedMenus;
+            noteMenuItem.addActionListener(_ -> {
+                tabs.setSelectedIndex(finalLoadedMenus);
+            });
             fileMenu.add(noteMenuItem);
+            loadedMenus++;
+        }
 
+        if (Boolean.parseBoolean(settings.getProperties().getProperty("view.journal"))) {
             JMenuItem journalMenuItem = new JMenuItem("Journal");
             journalMenuItem.setMnemonic(KeyEvent.VK_J);
-            journalMenuItem.addActionListener(_ -> tabs.setSelectedIndex(1));
+            int finalLoadedMenus = loadedMenus;
+            journalMenuItem.addActionListener(_ -> {
+                tabs.setSelectedIndex(finalLoadedMenus);
+            });
             fileMenu.add(journalMenuItem);
+            loadedMenus++;
+        }
 
+        if (loadedMenus > 0) {
             fileMenu.addSeparator();
+        }
 
             JMenuItem exitMenuItem = new JMenuItem("Exit");
             exitMenuItem.setMnemonic(KeyEvent.VK_X);
@@ -101,8 +117,13 @@ public class GuiApp {
     private JTabbedPane createJTabbedPane() {
         tabs = new JTabbedPane();
 
-        tabs.add(settings.getProperties().getProperty("tab.notes"), new NoteTab(settings));
-        tabs.add(settings.getProperties().getProperty("tab.journal"), new JournalTab(settings));
+        if (Boolean.parseBoolean(settings.getProperties().getProperty("view.notes"))) {
+            tabs.add(settings.getProperties().getProperty("tab.notes"), new NoteTab(settings));
+        }
+
+        if (Boolean.parseBoolean(settings.getProperties().getProperty("view.journal"))) {
+            tabs.add(settings.getProperties().getProperty("tab.journal"), new JournalTab(settings));
+        }
 
         return tabs;
     }
