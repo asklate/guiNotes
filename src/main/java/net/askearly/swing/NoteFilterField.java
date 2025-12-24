@@ -33,7 +33,7 @@ public class NoteFilterField extends JTextField {
             return;
         }
 
-        RowFilter<TableModel, Object> rf = null;
+        RowFilter<TableModel, Object> rf;
 
         try {
             rf = RowFilter.regexFilter("(?i)" + getText());
