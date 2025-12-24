@@ -13,7 +13,7 @@ public class ContextMenuTextArea extends JTextArea {
         setLineWrap(true);
         setWrapStyleWord(true);
         setMargin(new Insets(10, 10, 10, 10));
-        setFont(new Font("Monospaced", Font.PLAIN, 12));
+        setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
 
         // Create popup menu
         JPopupMenu popupMenu = new JPopupMenu();
