@@ -7,6 +7,8 @@ import net.askearly.actions.OpenNoteFileAction;
 import net.askearly.model.Note;
 import net.askearly.model.NoteTableModel;
 import net.askearly.settings.Settings;
+import net.askearly.swing.ComponentBorder;
+import net.askearly.swing.NoteFilterField;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -29,6 +31,17 @@ public class NoteTab extends JPanel {
         setLayout(new BorderLayout());
         add(createNoteTable(), BorderLayout.CENTER);
         add(createButtonPanel(), BorderLayout.SOUTH);
+        add(createNoteFilterField(), BorderLayout.NORTH);
+    }
+
+    private NoteFilterField  createNoteFilterField() {
+        NoteFilterField noteFilterField = new NoteFilterField(table, model);
+
+        ComponentBorder cb = new ComponentBorder(new JLabel(settings.getProperties().getProperty("label.filter")));
+        cb.setEdge(ComponentBorder.Edge.LEFT);
+        cb.install(noteFilterField);
+
+        return  noteFilterField;
     }
 
     private JScrollPane createNoteTable() {
